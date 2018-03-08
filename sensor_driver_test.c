@@ -170,19 +170,21 @@ int main(void)
   /* Default is 1024, set to higher value for better resolution */
   s8Res = gmp109_set_T_OSR(GMP109_OSRCIC_512, GMP109_OSRFIR_2);
 
-  /* Set the power mode to force mode */
-  /* Read data registers once to clear DRDY bit */  
-  s8Res = gmp109_set_mode(GMP109_MODE_FORCE);
-  s8Res = gmp109_read_P_T(&s32P, &s32T);
-  
+  /* Set sleep time between periodic conversion */
+  /* Default is 0.5ms */
+  s8Res = gmp109_set_standby_time(GMP109_STANDBY_TIME_0p5ms);
+
+  /* Set the power mode to continuous mode */
+  s8Res = gmp109_set_mode(GMP109_MODE_CONTINUOUS);
+
   /* set sea leve reference pressure */
   //If not set, use default 101325 Pa for pressure altitude calculation
   set_sea_level_pressure_base(101250.f);
 
   for(;;){
     
-    /* Force mode measure P & T*/
-    s8Res = gmp109_force_measure_P_T(&s32P, &s32T);
+    /* Read P & T*/
+    s8Res = gmp109_read_P_T(&s32P, &s32T);
     printf("P(code)=%d\r", s32P);
     printf("T(code)=%d\r", s32T);
 		
